@@ -87,6 +87,22 @@ public class Bullet {
                 }
                 break;
             }
+            if (tank.getX() + (64 * a) == Solution.bot.getTANK_GUI().getX()) {
+
+                lineBullet.setStartY(tank.getY() + 32);
+                lineBullet.setStartX(tank.getX() + 64);
+
+                lineBullet.setEndY(tank.getY() + 32);
+                lineBullet.setEndX((a) * 64);
+
+                Solution.LIVE_PLAYER2 -= 1;
+
+                isWall = true;
+
+                if (Solution.LIVE_PLAYER2 == 0) {
+                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
+                }
+            }
             else
             {
                 this.circle.toFront();
@@ -166,6 +182,28 @@ public class Bullet {
                 }
                 break;
             }
+//            if (tank.getX() - (64 * a) == Solution.bot.getTANK_GUI().getX() && tank.getY() == Solution.bot.getTANK_GUI().getY()) {
+//
+//                lineBullet.setStartY(tank.getY() + 32);
+//                lineBullet.setStartX(tank.getX());
+//
+//                lineBullet.setEndY(tank.getY() + 32);
+//                lineBullet.setEndX((a) * 64 - 64);
+//                System.out.println((a) * 64 + 64);
+//
+//                Solution.LIVE_PLAYER2 -= 1;
+//
+//                System.out.println(Solution.LIVE_PLAYER2);
+//
+//                isWall = true;
+//
+//                if (Solution.LIVE_PLAYER2 == 0) {
+//                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
+//
+//                    System.out.println("destroy");
+//                }
+//                break;
+//            }
             else
             {
                 this.circle.toFront();
@@ -183,6 +221,12 @@ public class Bullet {
 
             lineBullet.setEndY(tank.getY() + 32);
             lineBullet.setEndX(tank.getX() - 3 * 64);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            if (tank.getX() - (64 * a) == Solution.bot.getTANK_GUI().getX() && tank.getY() == Solution.bot.getTANK_GUI().getY()) {
+                
+            }
         }
     }
 

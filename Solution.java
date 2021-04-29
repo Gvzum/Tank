@@ -26,6 +26,15 @@ public class Solution extends Application {
     static HashMap<Node, Integer> livesOfWall = new HashMap<>();
     static ArrayList<Node> trees = new ArrayList<>();
 
+    //First player
+    static Player player = new MyPlayer();
+    static int LIVE_PLAYER1 = 4;
+
+    //Bot or Second Player
+    static int LIVE_PLAYER2 = 4;
+    static Bot bot = new Bot();
+
+
     public static void main(String[] args) {
         filename = args[0]; //cmd
         Application.launch(args);
@@ -45,7 +54,6 @@ public class Solution extends Application {
         Tank tank = new Tank();
         Rectangle space;
 
-        Player player = new MyPlayer();
         Game game = null;
         // try{
         map = new Map(input);
@@ -64,7 +72,6 @@ public class Solution extends Application {
         //GUI of the MAP
         //==============
 
-        Bot bot = new Bot();
 
         for (int i = 0; i < map.getMap().length; i++) {
             for (int j = 0; j < map.getMap()[i].length; j++) {
@@ -96,7 +103,7 @@ public class Solution extends Application {
                     pane.getChildren().add(bot.getTANK_GUI());
 
 
-                    nodes[i][j] = tank.getTANK_GUI();
+                    nodes[i][j] = bot.getTANK_GUI();
                 }
                 else if (map.getMap()[i][j] == 'S')
                 {
@@ -269,35 +276,38 @@ public class Solution extends Application {
 
         Random random = new Random();
 
-        new Thread(() -> {
-
-            try {
-
-                while (true) {
-                    int rand = random.nextInt(4);
-                    Platform.runLater(() -> {
-
-                        if (rand == 1) {
-                            bot.moveRight();
-                        }
-                        else if (rand == 2) {
-                            bot.moveLeft();
-                        }
-                        else if (rand == 3) {
-                            bot.moveDown();
-                        }
-                        else if (rand == 4) {
-                            bot.moveUp();
-                        }
-
-                    });
-                    Thread.sleep(200);
-                }
-            }
-            catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }).start();
+//        new Thread(() -> {
+//
+//            try {
+//
+//                while (true) {
+//
+//
+//                    int rand = random.nextInt(5);
+//                    Platform.runLater(() -> {
+//
+//                        if (rand == 1) {
+//                            bot.moveRight();
+//                        }
+//                        else if (rand == 2) {
+//                            bot.moveLeft();
+//                        }
+//                        else if (rand == 3) {
+//                            bot.moveDown();
+//                        }
+//                        else if (rand == 4) {
+//                            bot.moveUp();
+//                        }
+//
+//
+//                    });
+//                    Thread.sleep(2000);
+//                }
+//            }
+//            catch (InterruptedException ex) {
+//                ex.printStackTrace();
+//            }
+//        }).start();
     }
 
 }
