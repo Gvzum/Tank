@@ -12,7 +12,6 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -26,13 +25,6 @@ public class Solution extends Application {
     static Pane pane;
     static HashMap<Node, Integer> livesOfWall = new HashMap<>();
     static ArrayList<Node> trees = new ArrayList<>();
-
-    Game game = null;
-
-//    for bot datas
-    int bot_mind = 0;
-
-
 
     public static void main(String[] args) {
         filename = args[0]; //cmd
@@ -54,6 +46,7 @@ public class Solution extends Application {
         Rectangle space;
 
         Player player = new MyPlayer();
+        Game game = null;
         // try{
         map = new Map(input);
         game = new Game(map);
@@ -70,6 +63,8 @@ public class Solution extends Application {
         //==============
         //GUI of the MAP
         //==============
+
+        Bot bot = new Bot();
 
         for (int i = 0; i < map.getMap().length; i++) {
             for (int j = 0; j < map.getMap()[i].length; j++) {
@@ -89,6 +84,20 @@ public class Solution extends Application {
 
 
                 }
+
+                else if (map.getMap()[i][j] == 'R')
+                {
+                    bot.getTANK_GUI().setX(j * 64);
+                    bot.getTANK_GUI().setY(i * 64);
+
+                    bot.getTANK_GUI().setId("bot");
+                    bot.getTANK_GUI().toBack();
+
+                    pane.getChildren().add(bot.getTANK_GUI());
+
+
+                    nodes[i][j] = tank.getTANK_GUI();
+                }
                 else if (map.getMap()[i][j] == 'S')
                 {
                     block = new ImageView(new Image("wall.png"));
@@ -101,6 +110,7 @@ public class Solution extends Application {
                     block.setX(j * 64);
 
                     pane.getChildren().add(block);
+//                    block.toBack();
 
                     nodes[i][j] = block;
                 }
@@ -116,6 +126,7 @@ public class Solution extends Application {
                     block.setX(j * 64);
 
                     pane.getChildren().add(block);
+//                    block.toBack();
                     livesOfWall.put(block, 4);
 
 
@@ -166,7 +177,6 @@ public class Solution extends Application {
                 }
             }
         }
-        
         for (int i = 0; i < nodes.length; i++) {
             for (int j = 0; j < nodes[i].length; j++) {
                 if (nodes[i][j].getId().equals("tree"))
@@ -175,9 +185,6 @@ public class Solution extends Application {
                 }
             }
         }
-
-
-
 
         pane.setOnKeyPressed(e -> {
 
@@ -212,26 +219,26 @@ public class Solution extends Application {
 
 
 
-                    switch (Tank.direction)
+                    switch (tank.getDirection())
                     {
                         case 1:
 
-                            bullet.shootRight();
+                            bullet.shootRight(tank.getTANK_GUI());
                             break;
 
                         case 2:
 
-                            bullet.shootLeft();
+                            bullet.shootLeft(tank.getTANK_GUI());
                             break;
 
                         case 3:
 
-                            bullet.shootUp();
+                            bullet.shootUp(tank.getTANK_GUI());
                             break;
 
                         case 4:
 
-                            bullet.shootDown();
+                            bullet.shootDown(tank.getTANK_GUI());
                             break;
                     }
                     PathTransition animation = new PathTransition();
@@ -242,23 +249,12 @@ public class Solution extends Application {
                     animation.play();
                     animation.setOnFinished(s -> pane.getChildren().remove(bullet.getCircle()));
 
-                case ENTER:
-                    Bot bot = new Bot();
-                    game.addPlayer(bot);
-                    pane.getChildren().add(bot.getTANK_GUI());
-                    bot.getTANK_GUI().setX(0);
-                    bot.getTANK_GUI().setY(0);
-
-                    for (int i = 0; i < 10; i++) {
-                        Bullet bullet1 = new Bullet(bot, pane);
-                        bullet1.shootDown();
-                    }
-                    break;
             }
         });
 
 
         game.addPlayer(player);
+        game.addPlayer(bot);
         Position playerPosition = player.getPosition();
 
 
@@ -266,51 +262,42 @@ public class Solution extends Application {
 
         Scene scene = new Scene(pane, map.getSize() * 64,map.getSize() * 64);
 
-
-
-
         primaryStage.setScene(scene);
         primaryStage.setTitle("TANK");
         primaryStage.show();
         pane.requestFocus();
 
-        Bot bot = new Bot();
-        pane.getChildren().add(bot.getTANK_GUI());
-        bot.getTANK_GUI().setX(0);
-        bot.getTANK_GUI().setY(0);
-        game.addPlayer(bot);
-
         Random random = new Random();
 
         new Thread(() -> {
+
             try {
+
                 while (true) {
-                    bot_mind = random.nextInt(4);
+                    int rand = random.nextInt(4);
                     Platform.runLater(() -> {
 
-                        if (bot_mind == 1) {
+                        if (rand == 1) {
                             bot.moveRight();
                         }
-                        else if (bot_mind == 2) {
+                        else if (rand == 2) {
                             bot.moveLeft();
                         }
-                        else if (bot_mind == 3) {
-                            bot.moveUp();
-                        }
-                        else {
+                        else if (rand == 3) {
                             bot.moveDown();
                         }
-                    });
+                        else if (rand == 4) {
+                            bot.moveUp();
+                        }
 
+                    });
                     Thread.sleep(200);
                 }
             }
             catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-
         }).start();
-
     }
 
 }
@@ -375,7 +362,7 @@ class Map {
                 {
                     map[i] = skip.replaceAll(" ", "").toCharArray();
                 }
-                
+
                 if (map[i].length != size)
                 {
                     throw new InvalidMapException("Not enough map elements");
@@ -492,7 +479,6 @@ class MyPlayer implements Player {
 class Game {
     private Map map;
     private Player player;
-
     public Game(Map map) {
         this.map = map;
     }

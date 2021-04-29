@@ -5,13 +5,17 @@ public class Bot extends Tank implements Player{
 
 	private Rectangle TANK_GUI;
 	private Map map;
-	static int direction = 1;
+	private int direction = 1;
 
 
 	public Bot() {
-		this.TANK_GUI = new Rectangle(64, 64);
-		this.TANK_GUI.setFill(Color.DARKGREEN);
-		this.TANK_GUI = TANK_GUI;
+		super();
+		this.getTANK_GUI().setFill(Color.DARKGREEN);
+	}
+
+	@Override
+	public int getDirection() {
+		return super.getDirection();
 	}
 
 	@Override

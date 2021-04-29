@@ -5,12 +5,16 @@ import javafx.scene.shape.Rectangle;
 public class Tank extends MyPlayer {
     private Rectangle TANK_GUI;
     private Map map;
-    static int direction = 1;
+    private int direction = 1;
 
     public Tank()
     {
-        TANK_GUI = new Rectangle(64,64);
-        TANK_GUI.setFill(Color.GOLD);
+        this.TANK_GUI = new Rectangle(64,64);
+        this.TANK_GUI.setFill(Color.GOLD);
+    }
+
+    public int getDirection() {
+        return this.direction;
     }
 
     public Rectangle getTANK_GUI()
