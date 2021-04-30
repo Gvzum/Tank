@@ -34,6 +34,9 @@ public class Solution extends Application {
     static int LIVE_PLAYER2 = 4;
     static Bot bot = new Bot();
 
+    //Connecting to client
+
+
 
     public static void main(String[] args) {
         filename = args[0]; //cmd
@@ -308,8 +311,16 @@ public class Solution extends Application {
 //                ex.printStackTrace();
 //            }
 //        }).start();
-    }
 
+//        new Thread(() -> {
+//
+//
+//
+//        }).start();
+    }
+    public void connect() {
+
+    }
 }
 
 class Position {
@@ -351,7 +362,7 @@ class Map {
     private char[][] map;
     private int size;
 
-    public Map(java.util.Scanner input) throws InvalidMapException, FileNotFoundException {
+    public Map(java.util.Scanner input)  {
         try {
             // File file = new File(filename);
             // Scanner input = new Scanner(file);
