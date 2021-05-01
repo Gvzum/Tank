@@ -289,27 +289,22 @@ public class Solution extends Application {
                 while (true) {
                     BulletBot bul = new BulletBot(bot.getTANK_GUI(), pane);
 
+
                     int rand = random.nextInt(5);
                     Platform.runLater(() -> {
 
+                        pane.getChildren().add(bul.getCircle());
+
                         if (rand == 1) {
                             bot.moveRight();
-                            for (int i = 0; i < 3; i++) {
-                                if (bot.getTANK_GUI().getX() + (i * 64) == tank.getTANK_GUI().getX() &&
-                                bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
-                                    bul.shootRight();
-                                }
-                            }
+                            
+
+                            bul.shootRight();
                         }
 
                         else if (rand == 2) {
                             bot.moveLeft();
-                            for (int i = 2; i <= 0; i--) {
-                                if (bot.getTANK_GUI().getX() + (i * 64) == tank.getTANK_GUI().getX() &&
-                                        bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
-                                    bul.shootRight();
-                                }
-                            }
+                            bul.shootLeft();
                         }
 
                         else if (rand == 3) {
@@ -319,8 +314,17 @@ public class Solution extends Application {
                         else {
                             bot.moveDown();
                         }
+                        PathTransition animation = new PathTransition();
+                        animation.setNode(bul.getCircle());
+                        animation.setDuration(Duration.millis(500));
+                        animation.setPath(bul.getLine());
+                        animation.setCycleCount(1);
+                        animation.play();
+                        animation.setOnFinished(s -> pane.getChildren().remove(bul.getCircle()));
+                        System.out.println(bot.getDirection());
+
                     });
-                    System.out.println(bot.getDirection());
+
 
 
                     Thread.sleep(2000);

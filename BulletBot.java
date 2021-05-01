@@ -7,7 +7,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
-import java.nio.file.Paths;
 
 public class BulletBot {
 
@@ -33,6 +32,8 @@ public class BulletBot {
     public void shootRight()
     {
 //        shootAudio.play();
+
+        System.out.println("Right shoot of the bot");
 
         int times = (int)(tank.getX() / 64);
 
@@ -103,6 +104,8 @@ public class BulletBot {
     public void shootLeft()
     {
 //        shootAudio.play();
+        System.out.println("Left shoot of the bot");
+
 
         int times = (int)(tank.getX() / 64);
         int a = times;
@@ -167,6 +170,8 @@ public class BulletBot {
     public void shootUp()
     {
 //        shootAudio.play();
+
+        System.out.println("Up shoot of the bot");
 
         int times = (int)(tank.getY() / 64);
 
@@ -235,6 +240,8 @@ public class BulletBot {
     public void shootDown()
     {
 //        shootAudio.play();
+        System.out.println("Down shoot of the bot");
+
 
         int times = (int)(tank.getY() / 64);
 
