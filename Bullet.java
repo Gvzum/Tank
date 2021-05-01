@@ -56,7 +56,8 @@ public class Bullet {
                 break;
             }
             a++;
-            if (Solution.nodes[(int)tank.getY() / 64][a].getId().equals("wall"))
+            if (Solution.nodes[(int)tank.getY() / 64][a].getId().equals("wall") ||
+                    Solution.nodes[(int)tank.getY() / 64][a].getId().equals("brwall"))
             {
                 lineBullet.setStartY(tank.getY() + 32);
                 lineBullet.setStartX(tank.getX() + 64);
@@ -64,36 +65,27 @@ public class Bullet {
                 lineBullet.setEndY(tank.getY() + 32);
                 lineBullet.setEndX((a) * 64);
 
-                isWall = true;
-                break;
-            }
+                if (Solution.nodes[(int)tank.getY() / 64][a].getId().equals("brwall")) {
 
-            if (Solution.nodes[(int)tank.getY() / 64][a].getId().equals("brwall"))
-            {
-                lineBullet.setStartY(tank.getY() + 32);
-                lineBullet.setStartX(tank.getX() + 64);
+                    Solution.livesOfWall.put(Solution.nodes[(int)tank.getY() / 64][a], Solution.livesOfWall.get(Solution.nodes[(int)tank.getY() / 64][a]) - 1);
 
-                lineBullet.setEndY(tank.getY() + 32);
-                lineBullet.setEndX((a) * 64);
-
-                Solution.livesOfWall.put(Solution.nodes[(int)tank.getY() / 64][a], Solution.livesOfWall.get(Solution.nodes[(int)tank.getY() / 64][a]) - 1);
-
-                isWall = true;
-
-                if (Solution.livesOfWall.get(Solution.nodes[(int)tank.getY() / 64][a]) == 0)
-                {
-                    Solution.nodes[(int)tank.getY() / 64][a].setId("space");
-                    Solution.pane.getChildren().remove(Solution.nodes[(int)tank.getY() / 64][a]);
+                    if (Solution.livesOfWall.get(Solution.nodes[(int)tank.getY() / 64][a]) == 0)
+                    {
+                        Solution.nodes[(int)tank.getY() / 64][a].setId("space");
+                        Solution.pane.getChildren().remove(Solution.nodes[(int)tank.getY() / 64][a]);
+                    }
                 }
+                isWall = true;
                 break;
             }
-            if (tank.getX() + (64 * a) == Solution.bot.getTANK_GUI().getX()) {
+
+            if ((64 * a) == Solution.bot.getTANK_GUI().getX() && tank.getY() == Solution.bot.getTANK_GUI().getY()) {
 
                 lineBullet.setStartY(tank.getY() + 32);
-                lineBullet.setStartX(tank.getX() + 64);
+                lineBullet.setStartX(tank.getX());
 
                 lineBullet.setEndY(tank.getY() + 32);
-                lineBullet.setEndX((a) * 64);
+                lineBullet.setEndX((a) * 64 + 64);
 
                 Solution.LIVE_PLAYER2 -= 1;
 
@@ -102,6 +94,25 @@ public class Bullet {
                 if (Solution.LIVE_PLAYER2 == 0) {
                     Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
                 }
+                break;
+            }
+
+            else if ((64 * a) == Solution.bot.getTANK_GUI().getX() && tank.getY() == Solution.bot.getTANK_GUI().getY()) {
+
+                lineBullet.setStartY(tank.getY() + 32);
+                lineBullet.setStartX(tank.getX());
+
+                lineBullet.setEndY(tank.getY() + 32);
+                lineBullet.setEndX((a) * 64 + 64);
+
+                Solution.LIVE_PLAYER2 -= 1;
+
+                isWall = true;
+
+                if (Solution.LIVE_PLAYER2 == 0) {
+                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
+                }
+                break;
             }
             else
             {
@@ -130,14 +141,10 @@ public class Bullet {
         shootAudio.play();
 
         int times = (int)(tank.getX() / 64);
-
         int a = times;
         boolean isWall = true;
-        int start = -64;
 
         for (int i = times; i > times - 3; i--) {
-
-
 
             if (i == 0)
             {
@@ -151,7 +158,8 @@ public class Bullet {
                 break;
             }
             a--;
-            if (Solution.nodes[(int)tank.getY() / 64][a].getId().equals("wall"))
+            if (Solution.nodes[(int)tank.getY() / 64][a].getId().equals("wall") ||
+                    Solution.nodes[(int)tank.getY() / 64][a].getId().equals("brwall"))
             {
                 lineBullet.setStartY(tank.getY() + 32);
                 lineBullet.setStartX(tank.getX());
@@ -159,51 +167,36 @@ public class Bullet {
                 lineBullet.setEndY(tank.getY() + 32);
                 lineBullet.setEndX((a) * 64 + 64);
 
+                if (Solution.nodes[(int)tank.getY() / 64][a].getId().equals("brwall")) {
+
+                    Solution.livesOfWall.put(Solution.nodes[(int)tank.getY() / 64][a], Solution.livesOfWall.get(Solution.nodes[(int)tank.getY() / 64][a]) - 1);
+
+                    if (Solution.livesOfWall.get(Solution.nodes[(int)tank.getY() / 64][a]) == 0)
+                    {
+                        Solution.nodes[(int)tank.getY() / 64][a].setId("space");
+                        Solution.pane.getChildren().remove(Solution.nodes[(int)tank.getY() / 64][a]);
+                    }
+                }
                 isWall = true;
                 break;
             }
+            else if ((64 * a) == Solution.bot.getTANK_GUI().getX() && tank.getY() == Solution.bot.getTANK_GUI().getY()) {
 
-            if (Solution.nodes[(int)tank.getY() / 64][a].getId().equals("brwall"))
-            {
                 lineBullet.setStartY(tank.getY() + 32);
                 lineBullet.setStartX(tank.getX());
 
                 lineBullet.setEndY(tank.getY() + 32);
                 lineBullet.setEndX((a) * 64 + 64);
 
-                Solution.livesOfWall.put(Solution.nodes[(int)tank.getY() / 64][a], Solution.livesOfWall.get(Solution.nodes[(int)tank.getY() / 64][a]) - 1);
+                Solution.LIVE_PLAYER2 -= 1;
 
                 isWall = true;
 
-                if (Solution.livesOfWall.get(Solution.nodes[(int)tank.getY() / 64][a]) == 0)
-                {
-                    Solution.nodes[(int)tank.getY() / 64][a].setId("space");
-                    Solution.pane.getChildren().remove(Solution.nodes[(int)tank.getY() / 64][a]);
+                if (Solution.LIVE_PLAYER2 == 0) {
+                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
                 }
                 break;
             }
-//            if (tank.getX() - (64 * a) == Solution.bot.getTANK_GUI().getX() && tank.getY() == Solution.bot.getTANK_GUI().getY()) {
-//
-//                lineBullet.setStartY(tank.getY() + 32);
-//                lineBullet.setStartX(tank.getX());
-//
-//                lineBullet.setEndY(tank.getY() + 32);
-//                lineBullet.setEndX((a) * 64 - 64);
-//                System.out.println((a) * 64 + 64);
-//
-//                Solution.LIVE_PLAYER2 -= 1;
-//
-//                System.out.println(Solution.LIVE_PLAYER2);
-//
-//                isWall = true;
-//
-//                if (Solution.LIVE_PLAYER2 == 0) {
-//                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
-//
-//                    System.out.println("destroy");
-//                }
-//                break;
-//            }
             else
             {
                 this.circle.toFront();
@@ -221,12 +214,6 @@ public class Bullet {
 
             lineBullet.setEndY(tank.getY() + 32);
             lineBullet.setEndX(tank.getX() - 3 * 64);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            if (tank.getX() - (64 * a) == Solution.bot.getTANK_GUI().getX() && tank.getY() == Solution.bot.getTANK_GUI().getY()) {
-                
-            }
         }
     }
 
@@ -254,7 +241,8 @@ public class Bullet {
                 break;
             }
             a--;
-            if (Solution.nodes[a][(int)tank.getX() / 64].getId().equals("wall"))
+            if (Solution.nodes[a][(int)tank.getX() / 64].getId().equals("wall") ||
+                    Solution.nodes[a][(int)tank.getX() / 64].getId().equals("brwall"))
             {
                 lineBullet.setStartY(tank.getY());
                 lineBullet.setStartX(tank.getX() + 32);
@@ -262,27 +250,17 @@ public class Bullet {
                 lineBullet.setEndY((a) * 64 + 64);
                 lineBullet.setEndX(tank.getX() + 32);
 
-                isWall = true;
-                break;
-            }
+                if (Solution.nodes[a][(int)tank.getX() / 64].getId().equals("brwall")) {
+                    Solution.livesOfWall.put(Solution.nodes[a][(int)tank.getX() / 64], Solution.livesOfWall.get(Solution.nodes[a][(int)tank.getX() / 64]) - 1);
 
-            if (Solution.nodes[a][(int)tank.getX() / 64].getId().equals("brwall"))
-            {
-                lineBullet.setStartY(tank.getY());
-                lineBullet.setStartX(tank.getX() + 32);
-
-                lineBullet.setEndY((a) * 64 + 64);
-                lineBullet.setEndX(tank.getX() + 32);
-
-                Solution.livesOfWall.put(Solution.nodes[a][(int)tank.getX() / 64], Solution.livesOfWall.get(Solution.nodes[a][(int)tank.getX() / 64]) - 1);
-
-                isWall = true;
-
-                if (Solution.livesOfWall.get(Solution.nodes[a][(int)tank.getX() / 64]) == 0)
-                {
-                    Solution.nodes[a][(int)tank.getX() / 64].setId("space");
-                    Solution.pane.getChildren().remove(Solution.nodes[a][(int)tank.getX() / 64]);
+                    if (Solution.livesOfWall.get(Solution.nodes[a][(int)tank.getX() / 64]) == 0)
+                    {
+                        Solution.nodes[a][(int)tank.getX() / 64].setId("space");
+                        Solution.pane.getChildren().remove(Solution.nodes[a][(int)tank.getX() / 64]);
+                    }
                 }
+
+                isWall = true;
                 break;
             }
             else
@@ -330,7 +308,8 @@ public class Bullet {
                 break;
             }
             a++;
-            if (Solution.nodes[a][(int)tank.getX() / 64].getId().equals("wall"))
+            if (Solution.nodes[a][(int)tank.getX() / 64].getId().equals("wall") ||
+                    Solution.nodes[a][(int)tank.getX() / 64].getId().equals("brwall"))
             {
                 lineBullet.setStartY(tank.getY() + 64);
                 lineBullet.setStartX(tank.getX() + 32);
@@ -338,29 +317,20 @@ public class Bullet {
                 lineBullet.setEndY((a) * 64);
                 lineBullet.setEndX(tank.getX() + 32);
 
-                isWall = true;
-                break;
-            }
+                if (Solution.nodes[a][(int)tank.getX() / 64].getId().equals("brwall")) {
 
-            if (Solution.nodes[a][(int)tank.getX() / 64].getId().equals("brwall"))
-            {
-                lineBullet.setStartY(tank.getY() + 64);
-                lineBullet.setStartX(tank.getX() + 32);
+                    Solution.livesOfWall.put(Solution.nodes[a][(int)tank.getX() / 64], Solution.livesOfWall.get(Solution.nodes[a][(int)tank.getX() / 64]) - 1);
 
-                lineBullet.setEndY((a) * 64);
-                lineBullet.setEndX(tank.getX() + 32);
-
-                Solution.livesOfWall.put(Solution.nodes[a][(int)tank.getX() / 64], Solution.livesOfWall.get(Solution.nodes[a][(int)tank.getX() / 64]) - 1);
-
-                isWall = true;
-
-                if (Solution.livesOfWall.get(Solution.nodes[a][(int)tank.getX() / 64]) == 0)
-                {
-                    Solution.nodes[a][(int)tank.getX() / 64].setId("space");
-                    Solution.pane.getChildren().remove(Solution.nodes[a][(int)tank.getX() / 64]);
+                    if (Solution.livesOfWall.get(Solution.nodes[a][(int)tank.getX() / 64]) == 0)
+                    {
+                        Solution.nodes[a][(int)tank.getX() / 64].setId("space");
+                        Solution.pane.getChildren().remove(Solution.nodes[a][(int)tank.getX() / 64]);
+                    }
                 }
+                isWall = true;
                 break;
             }
+
             else
             {
                 this.circle.toFront();

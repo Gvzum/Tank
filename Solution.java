@@ -10,8 +10,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.net.*;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -35,7 +36,9 @@ public class Solution extends Application {
     static Bot bot = new Bot();
 
     //Connecting to client
-
+    ServerSocket serverSocket;
+    DataInputStream fromClient = null;
+    DataOutputStream toClient = null;
 
 
     public static void main(String[] args) {
@@ -278,7 +281,7 @@ public class Solution extends Application {
         pane.requestFocus();
 
         Random random = new Random();
-
+//
 //        new Thread(() -> {
 //
 //            try {
@@ -296,14 +299,16 @@ public class Solution extends Application {
 //                            bot.moveLeft();
 //                        }
 //                        else if (rand == 3) {
-//                            bot.moveDown();
+//                            bot.moveUp();
 //                        }
 //                        else if (rand == 4) {
-//                            bot.moveUp();
+//                            bot.moveDown();
 //                        }
 //
 //
 //                    });
+//                    System.out.println(bot.getDirection());
+//
 //                    Thread.sleep(2000);
 //                }
 //            }
@@ -311,9 +316,21 @@ public class Solution extends Application {
 //                ex.printStackTrace();
 //            }
 //        }).start();
-
-//        new Thread(() -> {
 //
+//        new Thread(() -> {
+//            try {
+//                serverSocket = new ServerSocket(8000);
+//
+//                Socket socket = serverSocket.accept();
+//
+//                toClient = new DataOutputStream(socket.getOutputStream());
+//                fromClient = new DataInputStream(socket.getInputStream());
+//
+//
+//            }
+//            catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
 //
 //
 //        }).start();
