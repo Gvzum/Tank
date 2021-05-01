@@ -281,41 +281,55 @@ public class Solution extends Application {
         pane.requestFocus();
 
         Random random = new Random();
-//
-//        new Thread(() -> {
-//
-//            try {
-//
-//                while (true) {
-//
-//
-//                    int rand = random.nextInt(5);
-//                    Platform.runLater(() -> {
-//
-//                        if (rand == 1) {
-//                            bot.moveRight();
-//                        }
-//                        else if (rand == 2) {
-//                            bot.moveLeft();
-//                        }
-//                        else if (rand == 3) {
-//                            bot.moveUp();
-//                        }
-//                        else if (rand == 4) {
-//                            bot.moveDown();
-//                        }
-//
-//
-//                    });
-//                    System.out.println(bot.getDirection());
-//
-//                    Thread.sleep(2000);
-//                }
-//            }
-//            catch (InterruptedException ex) {
-//                ex.printStackTrace();
-//            }
-//        }).start();
+
+        new Thread(() -> {
+
+            try {
+
+                while (true) {
+                    BulletBot bul = new BulletBot(bot.getTANK_GUI(), pane);
+
+                    int rand = random.nextInt(5);
+                    Platform.runLater(() -> {
+
+                        if (rand == 1) {
+                            bot.moveRight();
+                            for (int i = 0; i < 3; i++) {
+                                if (bot.getTANK_GUI().getX() + (i * 64) == tank.getTANK_GUI().getX() &&
+                                bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
+                                    bul.shootRight();
+                                }
+                            }
+                        }
+
+                        else if (rand == 2) {
+                            bot.moveLeft();
+                            for (int i = 2; i <= 0; i--) {
+                                if (bot.getTANK_GUI().getX() + (i * 64) == tank.getTANK_GUI().getX() &&
+                                        bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
+                                    bul.shootRight();
+                                }
+                            }
+                        }
+
+                        else if (rand == 3) {
+
+                        }
+
+                        else {
+
+                        }
+                    });
+                    System.out.println(bot.getDirection());
+
+
+                    Thread.sleep(2000);
+                }
+            }
+            catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }).start();
 //
 //        new Thread(() -> {
 //            try {

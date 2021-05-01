@@ -9,16 +9,16 @@ import javafx.scene.shape.Rectangle;
 
 import java.nio.file.Paths;
 
-public class Bullet {
-    
-    private Tank tank; 
+public class BulletBot {
+
+    private Rectangle tank;
     private Circle circle;
     private Pane pane;
     private Line lineBullet = new Line();
-    private MediaPlayer shootAudio = new MediaPlayer(new Media(Paths.get("vystrel-tanka.mp3").toUri().toString()));
+//    private MediaPlayer shootAudio = new MediaPlayer(new Media(Paths.get("vystrel-tanka.mp3").toUri().toString()));
 
-    public Bullet(Tank tank, Pane pane) {
-        this.tank = tank; 
+    public BulletBot(Rectangle tank, Pane pane) {
+        this.tank = tank;
         this.pane = pane;
         this.circle = new Circle(9);
         this.circle.setFill(Color.ORANGERED);
@@ -30,9 +30,9 @@ public class Bullet {
         return circle;
     }
 
-    public void shootRight(Rectangle tank)
+    public void shootRight()
     {
-        shootAudio.play();
+//        shootAudio.play();
 
         int times = (int)(tank.getX() / 64);
 
@@ -78,26 +78,6 @@ public class Bullet {
                 isWall = true;
                 break;
             }
-
-            else if ((64 * a) == Solution.bot.getTANK_GUI().getX() && tank.getY() == Solution.bot.getTANK_GUI().getY()) {
-
-                lineBullet.setStartY(tank.getY() + 32);
-                lineBullet.setStartX(tank.getX() + 64);
-
-                lineBullet.setEndY(tank.getY() + 32);
-                lineBullet.setEndX((a) * 64);
-
-                Solution.LIVE_PLAYER2 -= 1;
-
-                isWall = true;
-
-                if (Solution.LIVE_PLAYER2 == 0) {
-                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
-                    Solution.pane.setDisable(true);
-                }
-                break;
-            }
-
             else
             {
                 this.circle.toFront();
@@ -120,9 +100,9 @@ public class Bullet {
 
     }
 
-    public void shootLeft(Rectangle tank)
+    public void shootLeft()
     {
-        shootAudio.play();
+//        shootAudio.play();
 
         int times = (int)(tank.getX() / 64);
         int a = times;
@@ -164,24 +144,6 @@ public class Bullet {
                 isWall = true;
                 break;
             }
-            else if ((64 * a) == Solution.bot.getTANK_GUI().getX() && tank.getY() == Solution.bot.getTANK_GUI().getY()) {
-
-                lineBullet.setStartY(tank.getY() + 32);
-                lineBullet.setStartX(tank.getX());
-
-                lineBullet.setEndY(tank.getY() + 32);
-                lineBullet.setEndX((a) * 64 + 64);
-
-                Solution.LIVE_PLAYER2 -= 1;
-
-                isWall = true;
-
-                if (Solution.LIVE_PLAYER2 == 0) {
-                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
-                    Solution.pane.setDisable(true);
-                }
-                break;
-            }
             else
             {
                 this.circle.toFront();
@@ -202,9 +164,9 @@ public class Bullet {
         }
     }
 
-    public void shootUp(Rectangle tank)
+    public void shootUp()
     {
-        shootAudio.play();
+//        shootAudio.play();
 
         int times = (int)(tank.getY() / 64);
 
@@ -249,25 +211,6 @@ public class Bullet {
                 break;
             }
 
-            else if (64 * a == Solution.bot.getTANK_GUI().getY() && tank.getX() == Solution.bot.getTANK_GUI().getX()){
-
-                lineBullet.setStartY(tank.getY());
-                lineBullet.setStartX(tank.getX() + 32);
-
-                lineBullet.setEndY((a) * 64 + 64);
-                lineBullet.setEndX(tank.getX() + 32);
-
-                Solution.LIVE_PLAYER2 -= 1;
-
-                isWall = true;
-
-                if (Solution.LIVE_PLAYER2 == 0) {
-                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
-                    Solution.pane.setDisable(true);
-                }
-                break;
-            }
-
             else
             {
                 this.circle.toFront();
@@ -289,9 +232,9 @@ public class Bullet {
         }
     }
 
-    public void shootDown(Rectangle tank)
+    public void shootDown()
     {
-        shootAudio.play();
+//        shootAudio.play();
 
         int times = (int)(tank.getY() / 64);
 
@@ -333,25 +276,6 @@ public class Bullet {
                     }
                 }
                 isWall = true;
-                break;
-            }
-
-            else if (a * 64 == Solution.bot.getTANK_GUI().getY() && tank.getX() == Solution.bot.getTANK_GUI().getX()) {
-
-                lineBullet.setStartY(tank.getY() + 64);
-                lineBullet.setStartX(tank.getX() + 32);
-
-                lineBullet.setEndY((a) * 64);
-                lineBullet.setEndX(tank.getX() + 32);
-
-                Solution.LIVE_PLAYER2 -= 1;
-
-                isWall = true;
-
-                if (Solution.LIVE_PLAYER2 == 0) {
-                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
-                    Solution.pane.setDisable(true);
-                }
                 break;
             }
 
