@@ -313,11 +313,11 @@ public class Solution extends Application {
                         }
 
                         else if (rand == 3) {
-
+                            bot.moveUp();
                         }
 
                         else {
-
+                            bot.moveDown();
                         }
                     });
                     System.out.println(bot.getDirection());
