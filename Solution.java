@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -452,119 +453,96 @@ public class Solution extends Application {
             }
         }).start();
 
-        new Thread(() -> {
-            try {
-                serverSocket = new ServerSocket(8000);
-
-                Socket socket = serverSocket.accept();
-
-                toClient = new DataOutputStream(socket.getOutputStream());
-                fromClient = new DataInputStream(socket.getInputStream());
-
-
-            }
-            catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-
-        }).start();
-    }
-    public void botPlayer(Tank tank) {
-        Random random = new Random();
-
+//        new Thread(() -> {
+//            try {
+//                serverSocket = new ServerSocket(8000);
+//
+//                Socket socket = serverSocket.accept();
+//
+//                toClient = new DataOutputStream(socket.getOutputStream());
+//                fromClient = new DataInputStream(socket.getInputStream());
+//
+//
+//            }
+//            catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//
+//
+//        }).start();
         new Thread(() -> {
 
             try {
+                ServerSocket serverSocket = new ServerSocket(8000);
+
+                System.out.println("Waiting a connection");
 
                 while (true) {
-                    BulletBot bul = new BulletBot(bot.getTANK_GUI(), pane);
 
-                    int rand = random.nextInt(5);
-                    Platform.runLater(() -> {
+                    Socket conn = serverSocket.accept();
 
-                        pane.getChildren().add(bul.getCircle());
+                    System.out.println("Connected");
 
-                        for (int i = 0; i < 4; i++) {
 
-                            for (int j = 0; j < 3; j++) {
+                    new Thread(() -> {
+                        try {
+                            DataInputStream fromClient = new DataInputStream(conn.getInputStream());
 
-                                switch (i) {
-                                    case 0:
-                                        if (bot.getTANK_GUI().getX() + j * 64 == tank.getTANK_GUI().getX() &&
-                                                bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
-                                            bul.shootRight();
-                                            LIVE_PLAYER1 -= 1;
-                                        }
+
+                            Tank tank1 = new Tank();
+
+                            tank1.getTANK_GUI().setY(0);
+                            tank1.getTANK_GUI().setX(0);
+
+                            Platform.runLater(() -> {
+                                pane.getChildren().add(tank1.getTANK_GUI());
+
+//                                switch (choice) {
+//
+//                                    case 'W':
+//                                        tank1.moveUp();
+//                                        break;
+//                                    case 'A':
+//                                        tank1.moveLeft();
+//                                        break;
+//                                    case 'D':
+//                                        tank1.moveRight();
+//                                        break;
+//                                    case 'S':
+//                                        tank1.moveDown();
+//                                        break;
+//                                }
+                            });
+
+                            while (true){
+//                                System.out.println(choice);
+                                char choice = fromClient.readUTF().charAt(0);
+
+                                switch (choice) {
+
+                                    case 'W':
+                                        tank1.moveUp();
                                         break;
-
-                                    case 1:
-
-                                        if (bot.getTANK_GUI().getX() - j * 64 == tank.getTANK_GUI().getX() &&
-                                                bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
-                                            bul.shootLeft();
-                                            LIVE_PLAYER1 -= 1;
-
-                                        }
+                                    case 'A':
+                                        tank1.moveLeft();
                                         break;
-
-                                    case 2:
-
-                                        if (bot.getTANK_GUI().getY() + j * 64 == tank.getTANK_GUI().getY() &&
-                                                bot.getTANK_GUI().getX() == tank.getTANK_GUI().getX()) {
-                                            bul.shootDown();
-                                            LIVE_PLAYER1 -= 1;
-
-                                        }
+                                    case 'D':
+                                        tank1.moveRight();
                                         break;
-
-                                    case 3:
-
-                                        if (bot.getTANK_GUI().getY() - j * 64 == tank.getTANK_GUI().getY() &&
-                                                bot.getTANK_GUI().getX() == tank.getTANK_GUI().getX()) {
-                                            bul.shootUp();
-                                            LIVE_PLAYER1 -= 1;
-
-                                        }
+                                    case 'S':
+                                        tank1.moveDown();
                                         break;
                                 }
                             }
                         }
-                        PathTransition animation = new PathTransition();
-                        animation.setNode(bul.getCircle());
-                        animation.setDuration(Duration.millis(300));
-                        animation.setPath(bul.getLine());
-                        animation.setCycleCount(1);
-                        animation.play();
-                        animation.setOnFinished(s -> pane.getChildren().remove(bul.getCircle()));
-                        System.out.println(bot.getDirection());
-                        if (rand == 1) {
-                            bot.moveRight();
+                        catch (IOException ex) {
+                            ex.printStackTrace();
                         }
+                    }).start();
 
-                        else if (rand == 2) {
-                            bot.moveLeft();
-
-                        }
-
-                        else if (rand == 3) {
-                            bot.moveUp();
-                        }
-
-                        else {
-                            bot.moveDown();
-                        }
-
-
-                    });
-
-                    if (LIVE_PLAYER2 == 0) {
-                        break;
-                    }
-                    Thread.sleep(500);
                 }
             }
-            catch (InterruptedException ex) {
+            catch (IOException ex) {
                 ex.printStackTrace();
             }
         }).start();
