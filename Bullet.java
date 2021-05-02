@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
@@ -92,8 +93,10 @@ public class Bullet {
                 isWall = true;
 
                 if (Solution.LIVE_PLAYER2 == 0) {
-                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
-                    Solution.pane.setDisable(true);
+                    Solution.bot.getTANK_GUI().setDisable(true);
+                    System.out.println("Dead player2");
+
+
                 }
                 break;
             }
@@ -177,8 +180,9 @@ public class Bullet {
                 isWall = true;
 
                 if (Solution.LIVE_PLAYER2 == 0) {
-                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
-                    Solution.pane.setDisable(true);
+                    Solution.bot.getTANK_GUI().setDisable(true);
+                    System.out.println("Dead player2");
+
                 }
                 break;
             }
@@ -262,8 +266,10 @@ public class Bullet {
                 isWall = true;
 
                 if (Solution.LIVE_PLAYER2 == 0) {
-                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
-                    Solution.pane.setDisable(true);
+                    Solution.bot.getTANK_GUI().setDisable(true);
+                    System.out.println("Dead player2");
+
+
                 }
                 break;
             }
@@ -349,8 +355,9 @@ public class Bullet {
                 isWall = true;
 
                 if (Solution.LIVE_PLAYER2 == 0) {
-                    Solution.pane.getChildren().remove(Solution.bot.getTANK_GUI());
-                    Solution.pane.setDisable(true);
+                    Solution.bot.getTANK_GUI().setDisable(true);
+                    System.out.println("Dead player2");
+
                 }
                 break;
             }

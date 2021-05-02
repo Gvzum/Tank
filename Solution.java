@@ -1,10 +1,16 @@
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.animation.PathTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -29,11 +35,15 @@ public class Solution extends Application {
 
     //First player
     static Player player = new MyPlayer();
-    static int LIVE_PLAYER1 = 4;
+    static int LIVE_PLAYER1 = 100;
 
     //Bot or Second Player
     static int LIVE_PLAYER2 = 4;
     static Bot bot = new Bot();
+
+
+    static int WON1 = 0;
+    static int WON2 = 0;
 
     //Connecting to client
     ServerSocket serverSocket;
@@ -77,6 +87,9 @@ public class Solution extends Application {
         //==============
         //GUI of the MAP
         //==============
+
+        game.addPlayer(player);
+        game.addPlayer(bot);
 
 
         for (int i = 0; i < map.getMap().length; i++) {
@@ -199,6 +212,32 @@ public class Solution extends Application {
             }
         }
 
+        // Red Table
+        GridPane grid = new GridPane();
+        grid.setStyle("-fx-background-color: red; -fx-weight: bold");
+        grid.setTranslateX(map.getSize() * 64);
+        grid.setPadding(new Insets(20,20,20,20));
+        grid.setTranslateY(0);
+        grid.setPrefSize(200, map.getSize() * 64);
+
+        Label wonPlayer1 = new Label("Player 1: ");
+        Label wonPlayer2 = new Label("Player 2: ");
+
+        Label count1 = new Label("0");
+        Label count2 = new Label("0");
+
+        grid.add(wonPlayer1, 0,0);
+        grid.add(wonPlayer2, 0,1);
+
+        grid.add(count1, 1, 0);
+        grid.add(count2, 1, 1);
+
+        pane.getChildren().add(grid);
+
+
+
+
+        //Actions
         pane.setOnKeyPressed(e -> {
 
             switch (e.getCode())
@@ -262,24 +301,176 @@ public class Solution extends Application {
                     animation.play();
                     animation.setOnFinished(s -> pane.getChildren().remove(bullet.getCircle()));
 
+
             }
+
+//            if (e.getCode() == KeyCode.L) {
+//                botPlayer(bot);
+//            }
+
         });
 
 
-        game.addPlayer(player);
-        game.addPlayer(bot);
-        Position playerPosition = player.getPosition();
+
+//        game.addPlayer(player);
+//        game.addPlayer(bot);
 
 
         pane.setStyle("-fx-background-color: black");
 
-        Scene scene = new Scene(pane, map.getSize() * 64,map.getSize() * 64);
+        Scene scene = new Scene(pane, (map.getSize() * 64) + 200,map.getSize() * 64);
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("TANK");
         primaryStage.show();
         pane.requestFocus();
+        primaryStage.setResizable(false);
 
+//        botPlayer(tank);
+
+        Random random = new Random();
+
+
+        new Thread(() -> {
+
+            try {
+
+                while (true) {
+                    BulletBot bul = new BulletBot(bot.getTANK_GUI(), pane);
+
+                    int rand = random.nextInt(5);
+                    Platform.runLater(() -> {
+
+                        pane.getChildren().add(bul.getCircle());
+
+                        for (int i = 0; i < 4; i++) {
+
+                            for (int j = 0; j < 3; j++) {
+
+                                switch (i) {
+                                    case 0:
+                                        if (bot.getTANK_GUI().getX() + j * 64 == tank.getTANK_GUI().getX() &&
+                                                bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
+                                            bul.shootRight();
+                                            LIVE_PLAYER1 -= 1;
+                                        }
+                                        break;
+
+                                    case 1:
+
+                                        if (bot.getTANK_GUI().getX() - j * 64 == tank.getTANK_GUI().getX() &&
+                                                bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
+                                            bul.shootLeft();
+                                            LIVE_PLAYER1 -= 1;
+
+                                        }
+                                        break;
+
+                                    case 2:
+
+                                        if (bot.getTANK_GUI().getY() + j * 64 == tank.getTANK_GUI().getY() &&
+                                                bot.getTANK_GUI().getX() == tank.getTANK_GUI().getX()) {
+                                            bul.shootDown();
+                                            LIVE_PLAYER1 -= 1;
+
+                                        }
+                                        break;
+
+                                    case 3:
+
+                                        if (bot.getTANK_GUI().getY() - j * 64 == tank.getTANK_GUI().getY() &&
+                                                bot.getTANK_GUI().getX() == tank.getTANK_GUI().getX()) {
+                                            bul.shootUp();
+                                            LIVE_PLAYER1 -= 1;
+
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        PathTransition animation = new PathTransition();
+                        animation.setNode(bul.getCircle());
+                        animation.setDuration(Duration.millis(300));
+                        animation.setPath(bul.getLine());
+                        animation.setCycleCount(1);
+                        animation.play();
+                        animation.setOnFinished(s -> pane.getChildren().remove(bul.getCircle()));
+                        System.out.println(bot.getDirection());
+                        if (rand == 1) {
+                            bot.moveRight();
+                        } else if (rand == 2) {
+                            bot.moveLeft();
+
+                        } else if (rand == 3) {
+                            bot.moveUp();
+                        } else {
+                            bot.moveDown();
+                        }
+
+
+
+
+                    });
+                    Platform.runLater(() -> {
+                        try {
+                            if (LIVE_PLAYER2 == 0) {
+                                WON1 += 1;
+                                LIVE_PLAYER1 = 3;
+                                LIVE_PLAYER2 = 3;
+                                System.out.println("Player 2 dead");
+
+                                count1.setText(Integer.toString(WON1));
+//                                Thread.sleep(2000);
+                                bot.getTANK_GUI().setDisable(true);
+                                pane.setDisable(true);
+                                tank.getTANK_GUI().setDisable(true);
+                            } else if (LIVE_PLAYER1 == 0) {
+                                WON2 += 1;
+                                LIVE_PLAYER1 = 3;
+                                LIVE_PLAYER2 = 3;
+                                System.out.println("Player 1 dead");
+
+                                count2.setText(Integer.toString(WON2));
+                                bot.getTANK_GUI().setDisable(true);
+                                pane.setDisable(true);
+                                tank.getTANK_GUI().setDisable(true);
+                            }
+                        }
+                        catch (Exception es) {
+                            es.printStackTrace();
+                        }
+                    });
+                    if (WON1 == 3 ^ WON2 == 3) {
+                        break;
+                    }
+
+                    Thread.sleep(500);
+                }
+            }
+            catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }).start();
+
+        new Thread(() -> {
+            try {
+                serverSocket = new ServerSocket(8000);
+
+                Socket socket = serverSocket.accept();
+
+                toClient = new DataOutputStream(socket.getOutputStream());
+                fromClient = new DataInputStream(socket.getInputStream());
+
+
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+
+        }).start();
+    }
+    public void botPlayer(Tank tank) {
         Random random = new Random();
 
         new Thread(() -> {
@@ -289,22 +480,71 @@ public class Solution extends Application {
                 while (true) {
                     BulletBot bul = new BulletBot(bot.getTANK_GUI(), pane);
 
-
                     int rand = random.nextInt(5);
                     Platform.runLater(() -> {
 
                         pane.getChildren().add(bul.getCircle());
 
+                        for (int i = 0; i < 4; i++) {
+
+                            for (int j = 0; j < 3; j++) {
+
+                                switch (i) {
+                                    case 0:
+                                        if (bot.getTANK_GUI().getX() + j * 64 == tank.getTANK_GUI().getX() &&
+                                                bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
+                                            bul.shootRight();
+                                            LIVE_PLAYER1 -= 1;
+                                        }
+                                        break;
+
+                                    case 1:
+
+                                        if (bot.getTANK_GUI().getX() - j * 64 == tank.getTANK_GUI().getX() &&
+                                                bot.getTANK_GUI().getY() == tank.getTANK_GUI().getY()) {
+                                            bul.shootLeft();
+                                            LIVE_PLAYER1 -= 1;
+
+                                        }
+                                        break;
+
+                                    case 2:
+
+                                        if (bot.getTANK_GUI().getY() + j * 64 == tank.getTANK_GUI().getY() &&
+                                                bot.getTANK_GUI().getX() == tank.getTANK_GUI().getX()) {
+                                            bul.shootDown();
+                                            LIVE_PLAYER1 -= 1;
+
+                                        }
+                                        break;
+
+                                    case 3:
+
+                                        if (bot.getTANK_GUI().getY() - j * 64 == tank.getTANK_GUI().getY() &&
+                                                bot.getTANK_GUI().getX() == tank.getTANK_GUI().getX()) {
+                                            bul.shootUp();
+                                            LIVE_PLAYER1 -= 1;
+
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        PathTransition animation = new PathTransition();
+                        animation.setNode(bul.getCircle());
+                        animation.setDuration(Duration.millis(300));
+                        animation.setPath(bul.getLine());
+                        animation.setCycleCount(1);
+                        animation.play();
+                        animation.setOnFinished(s -> pane.getChildren().remove(bul.getCircle()));
+                        System.out.println(bot.getDirection());
                         if (rand == 1) {
                             bot.moveRight();
-                            
-
-                            bul.shootRight();
                         }
 
                         else if (rand == 2) {
                             bot.moveLeft();
-                            bul.shootLeft();
+
                         }
 
                         else if (rand == 3) {
@@ -314,47 +554,20 @@ public class Solution extends Application {
                         else {
                             bot.moveDown();
                         }
-                        PathTransition animation = new PathTransition();
-                        animation.setNode(bul.getCircle());
-                        animation.setDuration(Duration.millis(500));
-                        animation.setPath(bul.getLine());
-                        animation.setCycleCount(1);
-                        animation.play();
-                        animation.setOnFinished(s -> pane.getChildren().remove(bul.getCircle()));
-                        System.out.println(bot.getDirection());
+
 
                     });
 
-
-
-                    Thread.sleep(2000);
+                    if (LIVE_PLAYER2 == 0) {
+                        break;
+                    }
+                    Thread.sleep(500);
                 }
             }
             catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
         }).start();
-//
-//        new Thread(() -> {
-//            try {
-//                serverSocket = new ServerSocket(8000);
-//
-//                Socket socket = serverSocket.accept();
-//
-//                toClient = new DataOutputStream(socket.getOutputStream());
-//                fromClient = new DataInputStream(socket.getInputStream());
-//
-//
-//            }
-//            catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
-//
-//
-//        }).start();
-    }
-    public void connect() {
-
     }
 }
 
@@ -399,8 +612,6 @@ class Map {
 
     public Map(java.util.Scanner input)  {
         try {
-            // File file = new File(filename);
-            // Scanner input = new Scanner(file);
             size = input.nextInt();
             map = new char[size][size];
             if (size == 0) {
